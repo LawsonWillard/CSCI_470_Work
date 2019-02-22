@@ -1,0 +1,106 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Template for a SPARC file
+%% Author: Lawson Willard
+%% Description:	CSCI470 Homework 4
+%% Project describes how object's speed relate to each other
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+sorts
+
+
+	#thing = {animal,delorian,prius,doc,rex,bugs,turtle,rabbit,car, vehicle,
+	f150, truck, alligator}.
+	
+predicates
+
+    class(#thing).
+    is_subclass(#thing, #thing).
+    is_a(#thing,#thing).
+    subclass(#thing, #thing).
+    member(#thing, #thing).
+    siblings(#thing, #thing).
+    faster(#thing, #thing).
+    person(#thing).
+    car_owner(#thing, #thing).
+    
+
+rules
+
+    
+    %%Decides that if car is faster
+    
+    faster(F1, F2) :- member(F1, vehicle),
+                        member(F2, animal),
+                        F1 != F2.
+                        
+                        
+    -faster(F1, F2) :-  member(F2, vehicle),
+                        member(F1, animal),
+                        F1 != F2.
+                        
+    %%Decides if doc is faster                    
+                        
+    faster(F1, F2) :- car_owner(delorian, F1),
+                      member(F2, animal),
+                        F1 != F2.
+                      
+    -faster(F1, F2) :- car_owner(delorian, F2),
+                        member(F1, animal),
+                        F1 != F2.
+                        
+    %%Decides what animal is faster                    
+                        
+    faster(F1, F2) :- member(F1, rabbit),
+                        member(F2, turtle),
+                        F1 != F2.
+                        
+    -faster(F1, F2) :- member(F1, turtle),
+                        member(F2, rabbit),
+                        F1 != F2.
+                        
+    
+    %declare people classes and names/types
+    person(doc).
+	class(car).
+	class(animal).
+	class(truck).
+	is_a(f150, truck).
+	is_a(delorian,car).
+	is_a(bugs,rabbit).
+	is_a(rex,turtle).
+	
+	is_subclass(car, vehicle).
+	is_subclass(truck, vehicle).
+	is_subclass(turtle, animal).
+	is_subclass(rabbit, animal).
+	is_subclass(alligator, animal).
+	
+	%%subclass
+	subclass(C1, C2) :-  is_subclass(C1, C2).
+	
+	subclass(C1, C2) :- is_subclass(C1, C3),
+						subclass(C3, C2).
+	
+	-subclass(C1, C2) :- class(C1),
+						 class(C2),
+						 not subclass(C1, C2).
+
+	
+	%Membership
+	member(X,C) :- is_a(X,C).
+	member(X,C) :- is_a(X,C0),
+				   subclass(C0,C).
+				   
+	siblings(C1,C2) :- is_subclass(C1,C),
+					   is_subclass(C2,C),
+					   C1 != C2.
+	-member(X,C2) :- member(X,C1),
+					 siblings(C1,C2),
+					 C1 != C2.
+					 
+	%Owner for Vehicles
+	
+	car_owner(delorian, doc).
+	
+	
+	
