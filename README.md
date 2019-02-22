@@ -3,6 +3,9 @@
 Principles of Artificial AI
 
 Material Covered: 
-  Genetic Algorithms\n
+
+  Genetic Algorithms
+
   Answer Set Programming 
+  
   Natural Language Processing
