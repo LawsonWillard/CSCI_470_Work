@@ -1,0 +1,197 @@
+Homework 6:
+Lawson Willard
+
+1.
+
+	a.
+		water().
+		clean().
+		soap().
+		
+		ready <- soap(),
+				water().
+		
+		-ready() <- not ready().
+		
+		Candidate ANSWER SET = {water, clean, soap}
+		Program ANSWER SET = {water, clean, soap, ready}
+		
+		This set of literals cannot be a state in the AL system because of the defined fluent ready. Ready
+		is true if soap and water are true. Since both water and soap are true then ready has to be true.
+		But since ready is not in the set of literals, it cant be a state. 
+	
+	b.
+	
+		water().
+		clean().
+		soap().
+		
+		ready <- soap(),
+				water().
+		-ready <- not ready().
+		
+		Candidate ANSWER SET = {water, clean, soap, ready}
+		Program ANSWER SET = {water, clean, soap, ready}
+		
+		This set of literals is a state in the AL system. This is because the system is complete and consistent.
+		All rules that are in the candidate answer set are accounted for in the answer set of the
+		program.
+		
+	c.
+
+		-water().
+		clean().
+		soap().
+		
+		ready <- soap(),
+				water().
+		-ready <- not ready().
+		
+		Candidate ANSWER SET = {-water, clean, soap, ready}
+		Program ANSWER Set = {-water, clean, soap, -ready}
+		
+		This set of literals cannot be a state of the AL system. This is because ready cannot be found to be true.
+		The candidate answer set has ready as a true fact but because water is false the state constraint ready cannot be
+		found to be true as it needs water to be true as well. Thus because of the closed world assumption -ready
+		must be in the answer set. 
+		
+	d.
+	
+		-soap().
+		-clean().
+		water().
+		
+		ready() <- soap(),
+					water().
+		-ready() <- not ready().
+		
+		Candidate ANSWER SET = {-ready, -soap, -clean, water}
+		ANSWER SET = {-ready, -soap, -clean, water}
+		
+		This set of literals is a state of the AL system. All literals in the answer set can be found in the candidate
+		set and visa versa.
+		
+	e.
+	
+		water().
+		-water().
+		soap().
+		-soap().
+		clean().
+		-clean().
+		
+		ready() <- soap(),
+					water().
+		-ready() <- not ready().
+	
+		
+		Candidate ANSWER SET = {water, ¬water, clean, ¬clean, soap, ¬soap, ready, ¬ready}
+		ANSWER SET = NO ANSWER SET
+		
+		This set of literals cannot be a state in the AL system because it is not consistent. The set of literals has 
+		a fact and its negation. Because of this the state would be inconsistent and thus cannot be a part of the system. 
+		
+		
+	
+2.
+	n = 2.
+	step(0..n).
+	
+	fluent(inertial, soap).
+	fluent(inertial, water).
+	fluent(defined, ready).
+	action(wash).
+		
+	h(clean, I+1) <- h(soap, I),
+					occurs(wash, I).
+					I < n.
+					
+	h(ready, I) <- h(soap, I),
+					h(water, I).
+	-h(F, I) <- fluent(defined, F),
+				not h(F,I).
+				
+	-occurs(wash, I) <- h(-water, I).
+	
+	h(F, I+1) <- fluent(inertial, F),
+					h(F,I),
+					not -h(F, I+1),
+					I < n.
+					
+	-h(F, I+1) <- fluent(inertial, F),
+					-h(F, I),
+					not h(F, I+1),
+					I < n.
+					
+	-occurs(action(wash), I) <- not occurs(action(wash), I).
+	
+3. 
+
+#const n = 2.
+
+sorts
+
+	#item = {water, soap, clean}.
+	#state = {ready}.
+	#inertial_fluent = is(#item).
+	#defined_fluent = is(#state).
+	#fluent = #defined_fluent + #inertial_fluent.
+	#action = {wash}.
+	#step = 0..n.
+
+predicates
+
+	h(#fluent, #step).
+	occurs(#action, #step).
+	is(#fluent).
+
+rules
+
+	h(is(clean), I+1) :- h(is(soap), I),
+					occurs(wash, I).
+					
+	h(is(ready), I) :- h(is(soap), I),
+					h(is(water), I).
+	-h(F, I) :- #defined_fluent(F),
+				not h(F,I).
+				
+	-occurs(wash, I) :- -h(is(water), I).
+	
+	h(F, I+1) :- #inertial_fluent(F),
+					h(F,I),
+					not -h(F, I+1).
+					
+	-h(F, I+1) :- #inertial_fluent(F),
+					-h(F, I),
+					not h(F, I+1).
+					
+	-occurs(wash, I) :- not occurs(wash, I).
+	
+	%%Initial Setup:
+
+	h(is(soap), 0).
+	h(is(water), 0).
+	h(is(ready), 0).
+	-h(is(clean), 0).
+
+	occurs(wash, 0).
+
+4.
+	
+	#Claire moves to To_place if she wants to go to To_place
+	
+	moves(Claire) causes location(Claire, To_Place) if wants_to_go(To_Place)
+	
+	#Claire is at location place with obj if she wants to go to place and has that object
+	
+	location(Claire, place) if wants_to_go(place), carries(Claire, Obj)
+	
+	#Impossible for Claire to go anywhere without the object
+	
+	impossible moves(Claire) if -carries(Claire, Obj)
+	
+	
+	
+	
+	
+	
