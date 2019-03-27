@@ -1,0 +1,50 @@
+Action Language of washing a dish Answer Set Programming
+
+#const n = 2.
+
+sorts
+
+	#item = {water, soap, clean}.
+	#state = {ready}.
+	#inertial_fluent = is(#item).
+	#defined_fluent = is(#state).
+	#fluent = #defined_fluent + #inertial_fluent.
+	#action = {wash}.
+	#step = 0..n.
+
+predicates
+
+	h(#fluent, #step).
+	occurs(#action, #step).
+	is(#fluent).
+
+rules
+
+	h(is(clean), I+1) :- h(is(soap), I),
+					occurs(wash, I).
+					
+	h(is(ready), I) :- h(is(soap), I),
+					h(is(water), I).
+	-h(F, I) :- #defined_fluent(F),
+				not h(F,I).
+				
+	-occurs(wash, I) :- -h(is(water), I).
+	
+	h(F, I+1) :- #inertial_fluent(F),
+					h(F,I),
+					not -h(F, I+1).
+					
+	-h(F, I+1) :- #inertial_fluent(F),
+					-h(F, I),
+					not h(F, I+1).
+					
+	-occurs(wash, I) :- not occurs(wash, I).
+	
+	%%Initial Setup:
+
+	h(is(soap), 0).
+	h(is(water), 0).
+	h(is(ready), 0).
+	-h(is(clean), 0).
+
+	occurs(wash, 0).
